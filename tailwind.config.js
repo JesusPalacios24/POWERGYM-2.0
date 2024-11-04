@@ -10,8 +10,20 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        fondoPG: '#f7ecee',
+        fondoEX: '#f6f1f1',
       },
     },
+    fontSize: {
+      'h1': '61.04px', 
+      'h2': '48.83px',
+      'h3': '39.06px', 
+      'h4': '31.25px', 
+      'h5': '25px', 
+      'h6': '20px',  
+      'p': '16px',  
+      'navText': '18px',   
+    }, 
   },
   plugins: [],
 };
