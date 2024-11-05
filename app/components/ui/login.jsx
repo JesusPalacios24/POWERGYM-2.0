@@ -1,29 +1,26 @@
-"use client"; // Debe estar en la primera línea para habilitar el uso del cliente
-
+"use client";
 import React, { useState } from "react";
+import { useAuth } from "./AuthContext"; // Importa el hook personalizado
 
-// Lista de usuarios con nombre de usuario y contraseña
 const users = [
   { username: "user1", password: "123" },
   { username: "user2", password: "456" }
 ];
 
 export default function Login() {
-  // Estados para manejar el nombre de usuario, contraseña y posibles errores
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  // Maneja el evento de envío del formulario
   const handleLogin = (e) => {
     e.preventDefault();
     const user = users.find(
       (user) => user.username === username && user.password === password
     );
 
-    // Verifica si el usuario existe y las credenciales son correctas
     if (user) {
-      alert("Successful login");
+      login(); // Llama a login del contexto
       window.location.href = '/'; // Redirige al home después de iniciar sesión
     } else {
       setError("Incorrect username or password");
@@ -31,14 +28,14 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen ">
-      <div className="p-8 rounded-lg  w-full max-w-md">
+    <div className="flex items-center justify-center h-screen">
+      <div className="p-8 rounded-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        
+
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">User:</label>
-            <input 
+            <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -49,7 +46,7 @@ export default function Login() {
 
           <div>
             <label className="block text-sm font-medium mb-2">Password:</label>
-            <input 
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -58,12 +55,11 @@ export default function Login() {
             />
           </div>
 
-          {/* Muestra el mensaje de error si las credenciales son incorrectas */}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           <div className="flex justify-center">
-            <button>
-                LOGIN
+            <button type="submit">
+              LOGIN
             </button>
           </div>
         </form>
@@ -71,3 +67,4 @@ export default function Login() {
     </div>
   );
 }
+
