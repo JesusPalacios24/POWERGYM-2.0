@@ -2,19 +2,49 @@
 import React, { useState } from "react";
 import { useAuth } from "./AuthContext"; // Importa el hook personalizado
 
+
 const users = [
   { username: "user1", password: "123" },
   { username: "user2", password: "456" }
 ];
 
 export default function Login() {
+
   const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+
+    try {
+      // Realiza la solicitud de login al backend
+      const response = await fetch("/api/users/login",{
+        method: "POST", //especificar metodo
+        headers: {
+          "Content-Type": "application/json", //cuerpo de la solicitud
+        },
+        body: JSON.stringify({username,password}), // convertir los datos del formulario en JSON
+      });
+      //obtneer respuesta
+      const data = await response.json();
+
+      if (response.ok && data.success) { // verificar respuesta exitosa
+        login();//llamada al login del contexto
+        window.location.href = '/'; // Redirige al home después de iniciar sesión
+    } else {
+      //Respuesta NO exitosa
+      setError(data.message||"Error Inicio Sesion");
+    }
+
+    } catch (error) {
+      setError("Ocurrio un problema de autentificacion")
+    }
+
+
+/*
+PARTE DE JESUS
     const user = users.find(
       (user) => user.username === username && user.password === password
     );
@@ -24,7 +54,7 @@ export default function Login() {
       window.location.href = '/'; // Redirige al home después de iniciar sesión
     } else {
       setError("Incorrect username or password");
-    }
+    }*/
   };
 
   return (
