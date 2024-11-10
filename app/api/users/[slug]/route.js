@@ -31,6 +31,3 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function POST(req, res){
-    
-}
