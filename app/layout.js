@@ -2,6 +2,7 @@
 import Navbar from "./components/ui/nav";
 import { AuthProvider } from "./components/ui/AuthContext";
 import "./globals.css";
+import Sesion from "./login/page";
 
 export const metadata = {
     title: "POWER GYM",
@@ -17,7 +18,9 @@ export default function Home({ children }) {
                     <header>
                         <Navbar />
                     </header>
-                    <main>{children}</main>
+                    <main style={{ paddingTop: '120px' }}> {/* Ajusta este valor según la altura de tu Navbar */}
+                        {children}</main>
+                    
                 </body>
             </html>
         </AuthProvider>

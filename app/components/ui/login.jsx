@@ -15,6 +15,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -27,12 +29,27 @@ export default function Login() {
         },
         body: JSON.stringify({username,password}), // convertir los datos del formulario en JSON
       });
+
+      //Solicitud de todos los datos
+
+      
+
       //obtneer respuesta
       const data = await response.json();
 
       if (response.ok && data.success) { // verificar respuesta exitosa
-        login();//llamada al login del contexto
-        window.location.href = '/'; // Redirige al home después de iniciar sesión
+
+        const userData ={
+          id: username,
+        }
+
+        login(userData);//llamada al login del contexto
+        if (username.charAt(0) =="C"){
+          window.location.href = '/perfilC';  // Redirige al Perfil cleinte después de iniciar sesión
+        }else{
+          window.location.href = '/pelfilEmpleado';  // Redirige al Perfil empelado después de iniciar sesión
+        }
+       // Redirige al home después de iniciar sesión
     } else {
       //Respuesta NO exitosa
       setError(data.message||"Error Inicio Sesion");

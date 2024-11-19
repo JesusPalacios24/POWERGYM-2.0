@@ -12,6 +12,9 @@ module.exports = {
         foreground: "var(--foreground)",
         fondoPG: '#f7ecee',
         fondoEX: '#f6f1f1',
+        salmonColor:'#ff9b70',
+        naranjaLogo:'#fe8f46',
+        colorIcons:'#f6e1dc'
       },
     },
     fontSize: {
