@@ -1,6 +1,6 @@
 'use client'
-import Cliente from "../components/ui/periflClt"
-import Tabs from "../components/ui/tabs";
+import Cliente from "../components/cards/periflClt"
+import Tabs from "../components/tabs";
 import { useAuth } from "../components/ui/AuthContext";
 
 export default function PerfilCliente(){

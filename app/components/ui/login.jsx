@@ -47,7 +47,7 @@ export default function Login() {
         if (username.charAt(0) =="C"){
           window.location.href = '/perfilC';  // Redirige al Perfil cleinte después de iniciar sesión
         }else{
-          window.location.href = '/pelfilEmpleado';  // Redirige al Perfil empelado después de iniciar sesión
+          window.location.href = '/pelfilE';  // Redirige al Perfil empelado después de iniciar sesión
         }
        // Redirige al home después de iniciar sesión
     } else {

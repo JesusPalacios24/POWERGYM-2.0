@@ -7,6 +7,7 @@ export default function Tabs({username}) {
 
     const [activeTab, setActiveTab] = useState("seguimiento");
     const [userSeguimiento,setUserSeguimiento]= useState([]);
+    const[rutinas,setRutinas]=useState([]);
 
     const fecha = new Date();
     const fechaFormateada = fecha.toISOString().split("T")[0]; // Ejemplo: 2024-11-18
@@ -88,11 +89,11 @@ export default function Tabs({username}) {
                                
                                     <div className="flex items-center justify-center space-x-4 p-5 ">
                                         <label htmlFor="fecha" class="block mb-2 text-sm font-medium text-gray-900">Fecha</label>
-                                        <input type="date" id="fecha" readOnly value={fechaFormateada} class="bg-colorIcons border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 "placeholder="m/d/a" required />
+                                        <input type="date" id="fecha" readOnly value={fechaFormateada} className="bg-colorIcons border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 "placeholder="m/d/a" required />
                 
                                         
-                                        <label htmlFor="pesoactual" class="block mb-2 text-sm font-medium text-gray-900">Peso Actual</label>
-                                        <input type="number" id="pesoactual" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 "placeholder="Peso" required />
+                                        <label htmlFor="pesoactual" className="block mb-2 text-sm font-medium text-gray-900">Peso Actual</label>
+                                        <input type="number" id="pesoactual" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 "placeholder="Peso" required />
                                         <button type="button" class="text-white bg-salmonColor hover:bg-naranjaLogo focus:outline-none focus:ring-4 focus:ring-colorIcons font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 ">Registrar</button>
                                     </div>
 
@@ -153,7 +154,48 @@ export default function Tabs({username}) {
                     </div>
                 );
             case "rutinas":
-                return <p className="p-4">Este es el contenido de Rutinas.</p>;
+
+                return (
+                    <div>
+                <h1>Rutinas Recomendadas</h1>
+                <div className="flex justify-center">
+                    {/**TABLA DE RUTINAS*/}
+                    <table  className=" text-sm text-left rtl:text-right text-black "> 
+                        <thead className="text-xs text-white uppercase bg-naranjaLogo ">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    Rutina
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Descripcion
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Duracion
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-center">
+                            {/**Mostar datos rutina */}
+                            <tr className="bg-white border  hover:bg-colorIcons ">
+                                <td className="px-6 py-4">
+                                    Sentadillas
+                                </td>
+                                <td>
+                                    3 series de 12 repeticiones
+                                </td>
+                                <td className="px-6 py-4">
+                                    30 minutos
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div></div>
+
+
+
+
+            );
             default:
                 return null;
         }
@@ -199,7 +241,7 @@ export default function Tabs({username}) {
                                 : "text-white bg-salmonColor hover:bg-colorIcons hover:text-naranjaLogo"
                         } border-r border-salmonColor focus:ring-colorIcons focus:outline-none`}
                     >
-                        Rutinas
+                        Rutinas Recomendadas
                     </button>
                 </li>
             </ul>

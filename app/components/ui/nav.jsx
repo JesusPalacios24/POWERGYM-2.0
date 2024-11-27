@@ -13,7 +13,7 @@ function Navbar() {
                 {/* Logo */}
                 <div className="flex items-center">
                     <a href="/">
-                        <img src="logo.png" alt="Logo" className="h-10 rounded-md" />
+                        <img src="/powergym.png" alt="Logo" className="h-20 rounded-md" />
                     </a>
                 </div>
 
@@ -22,8 +22,8 @@ function Navbar() {
                     <a href="/" className="hover:text-black text-navText font-bold text-xl">Inicio</a>
                     <a href="/" className="hover:text-black text-navText font-bold text-xl">Servicios</a>
                     {isAuthenticated ? (
-                        <a href="../perfilC" className="hover:text-black text-navText font-bold text-xl">
-                            <img src="user.png" alt="Perfil" className="h-12 rounded-md" />
+                        <a href="../perfilE" className="hover:text-black text-navText font-bold text-xl">
+                            <img src="/userdefecto.png" alt="Perfil" className="h-12 rounded-full" />
                         </a>
                     ) : (
                         <a href="../login" className="hover:text-black text-navText font-bold text-xl">Login</a>
