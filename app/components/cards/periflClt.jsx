@@ -3,6 +3,8 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../ui/AuthContext"; // Importa el hook de autenticación
+import EntrevistaCliente from "../entrevistaCl";
+
 
 export default function Perfil({username}) {
     const [userData,setUserData] = useState(null); // guardar datos del usuarop
@@ -10,6 +12,13 @@ export default function Perfil({username}) {
 
     const { logout } = useAuth(); // Accede a la función logout desde el contexto
     const router = useRouter(); // Para redirigir
+
+    const rute = useRouter();
+
+
+    const handleEntrevista = () =>{
+        rute.push("perfilC/entrevista")
+    };
 
     // Función de logout que también redirige
     const handleLogout = () => {
@@ -96,7 +105,7 @@ export default function Perfil({username}) {
 
                             {/* BOTON PARA LA ENTREVISTA, QUE DEPENDIENDO SI ESTA LA INFO*/}
                             <div className=" py-4 w-full flex justify-center">
-                            <a href="#" onClick= {handleLogout} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-salmonColor rounded-lg hover:bg-naranjaLogo focus:ring-4 focus:outline-none focus:ring-colorIcons">
+                            <a href="#" onClick= {handleEntrevista} className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-salmonColor rounded-lg hover:bg-naranjaLogo focus:ring-4 focus:outline-none focus:ring-colorIcons">
                             Realizar entrevista
                             </a>
                         </div>

@@ -14,7 +14,8 @@ module.exports = {
         fondoEX: '#f6f1f1',
         salmonColor:'#ff9b70',
         naranjaLogo:'#fe8f46',
-        colorIcons:'#f6e1dc'
+        colorIcons:'#f6e1dc',
+        imagenCamuflaje:'#f7f5e1'
       },
     },
     fontSize: {
