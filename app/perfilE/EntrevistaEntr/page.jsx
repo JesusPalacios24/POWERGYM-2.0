@@ -3,7 +3,7 @@ import React from "react";
 import EncuestaEntrenador from "@/app/components/ui/EntrevistaEntr";
  
 
-function EncuestaEntrenador() {
+function EncuestaEnt() {
 
     return(
         <div>
@@ -13,4 +13,4 @@ function EncuestaEntrenador() {
     
 }
 
-export default EncuestaEntrenador;
+export default EncuestaEnt;

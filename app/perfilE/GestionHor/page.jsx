@@ -3,7 +3,7 @@ import React from "react";
 import GestionHorarios from "@/app/components/gestionHor";
  
 
-function GestionHorarios() {
+function GestionH() {
 
     return(
         <div>
@@ -13,4 +13,4 @@ function GestionHorarios() {
     
 }
 
-export default GestionHorarios;
+export default GestionH;

@@ -3,7 +3,7 @@ import React from "react";
 import VentaProductos from "@/app/components/ui/Ventaprod";
  
 
-function VentaProductos() {
+function VentaP() {
 
     return(
         <div>
@@ -13,4 +13,4 @@ function VentaProductos() {
     
 }
 
-export default VentaProductos;
+export default VentaP;
