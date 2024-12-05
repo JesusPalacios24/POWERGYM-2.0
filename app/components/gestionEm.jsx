@@ -100,7 +100,7 @@ function GestionEmpleado() {
   //funcion para registrar
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    /*
               // Validación de CURP (18 caracteres, formato específico)
               const curpPattern = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z0-9]{3}[0-9]$/;
               const curp = empleado.curp.trim().toUpperCase();
@@ -109,7 +109,7 @@ function GestionEmpleado() {
                 alert("La CURP no tiene un formato válido. Asegúrate de seguir este patrón: 'XXXXYYMMDDHHNNNCN'.");
                 return; // Detiene la ejecución si la CURP no es válida
               }
-              
+             */ 
 
         // Validación de Código Postal (CP) (5 dígitos numéricos)
         const cpPattern = /^\d{5}$/;
