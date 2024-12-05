@@ -4,6 +4,7 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -12,6 +13,10 @@ module.exports = {
         foreground: "var(--foreground)",
         fondoPG: '#f7ecee',
         fondoEX: '#f6f1f1',
+        salmonColor:'#ff9b70',
+        naranjaLogo:'#fe8f46',
+        colorIcons:'#f6e1dc',
+        imagenCamuflaje:'#f7f5e1'
       },
     },
     fontSize: {
