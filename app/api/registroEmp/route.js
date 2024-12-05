@@ -16,13 +16,15 @@ export async function POST(req) {
       domicilioE,
       nivelEducacion,
       fechaCumple,
+      contrasena,
+      foto,
     } = await req.json();
 
     // Validación de datos recibidos
     if (
       !nombreE || !apellidoPE || !sexoE || !puesto || !correoE ||
       !celularE || !domicilioE || !nivelEducacion || !fechaCumple ||
-      !apellidoME || !sueldoE
+      !apellidoME || !sueldoE || !id_Empleado
     ) {
       return new Response(
         JSON.stringify({ error: 'Todos los campos son obligatorios.' }),
@@ -41,8 +43,8 @@ export async function POST(req) {
     // Insertar el nuevo empleado en la base de datos
     const [result] = await pool.execute(
       `INSERT INTO empleado
-        (id_Empleado, nombreE, apellidoPE, apellidoME, sexoE, sueldoE, puesto, correoE, celularE, domicilioE, nivelEducacion, fechaCumple)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (id_Empleado, nombreE, apellidoPE, apellidoME, sexoE, sueldoE, puesto, correoE, celularE, domicilioE, nivelEducacion, fechaCumple, contrasena, foto)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         id_Empleado,
         nombreE,
@@ -56,6 +58,8 @@ export async function POST(req) {
         domicilioE,
         nivelEducacion,
         fechaCumple,
+        contrasena,
+        foto,
       ]
     );
 

@@ -9,24 +9,7 @@ function GestionEmpleado() {
 
   const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
   const [id_Empleado, setEmpleadoId] = useState(""); // Almacena el ID del empleado que el usuario ingresa
-  
- 
-  const [imageSrc, setImageSrc] = useState("/userdefecto.png");
-  const [imageBlob, setImageBlob] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0]; // Obtiene el archivo seleccionado
-    if (file) {
-      const blob = new Blob([file], { type: file.type }); // Crea un blob del archivo
-      setImageBlob(blob);
-
-      // Genera una URL temporal para mostrar la imagen seleccionada
-      const imageURL = URL.createObjectURL(file);
-      setImageSrc(imageURL);
-    }
-  };
-
-  // Estado para almacenar los datos del empleado
+  const [modoEdicion, setModoEdicion] = useState(false); // Controla si estamos en modo edición o no
   const [empleado, setEmpleado] = useState({
     id_Empleado: "",
     nombreE: "",
@@ -40,7 +23,22 @@ function GestionEmpleado() {
     domicilioE: "",
     nivelEducacion: "",
     fechaCumple: "",
+    contrasena:"PowerGYM123",
+    foto:"",
   });
+
+  const [imageSrc, setImageSrc] = useState("/userdefecto.png");
+  const [imageBlob, setImageBlob] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const blob = new Blob([file], { type: file.type });
+      setImageBlob(blob);
+      const imageURL = URL.createObjectURL(file);
+      setImageSrc(imageURL);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +51,6 @@ function GestionEmpleado() {
   const handlePuestoChange = async (e) => {
     const nuevoPuesto = e.target.value;
     const nuevoId = await generarIdEmpleado(nuevoPuesto);
-
     setEmpleado((prevEmpleado) => ({
       ...prevEmpleado,
       puesto: nuevoPuesto,
@@ -86,8 +83,6 @@ function GestionEmpleado() {
   //funcion para registrar
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(empleado); // Verifica los datos que estás enviando
-
     try {
       const res = await fetch('../api/registroEmp/', {
         method: 'POST',
@@ -96,14 +91,12 @@ function GestionEmpleado() {
         },
         body: JSON.stringify(empleado),
       });
-
       const data = await res.json();
-
       if (res.status === 200) {
         alert('Empleado registrado exitosamente');
-        route.refresh()
+        route.refresh();
       } else {
-        alert(`Error al registrar al empleado: ${data.error || 'Error: Error desconocido'}`);
+        alert(`Error al registrar al empleado: ${data.error || 'Error desconocido'}`);
       }
     } catch (error) {
       console.error('Error al enviar los datos:', error);
@@ -113,19 +106,18 @@ function GestionEmpleado() {
 
   //Función para manejar el envío del ID y cargar los datos
   const handleModalSubmit = async () => {
-    // Verifica si el ID no está vacío
     if (!id_Empleado) {
       alert("Por favor ingrese un ID de empleado válido");
       return;
     }
 
     try {
-      // Aquí haces una solicitud al backend para obtener los datos del empleado
-      const res = await fetch(`/api/${id_Empleado}`); // Asumiendo que tienes una ruta para obtener datos por ID
+      const res = await fetch(`/api/${id_Empleado}`);
       const data = await res.json();
 
       if (res.status === 200 && data) {
         setEmpleado(data); // Carga los datos del empleado en el formulario
+        setModoEdicion(true); // Activa el modo edición
         setShowModal(false); // Cierra el modal
       } else {
         alert("Empleado no encontrado o error al cargar datos");
@@ -146,16 +138,13 @@ function GestionEmpleado() {
         },
         body: JSON.stringify(empleado),
       });
-
       const data = await res.json();
-
       if (res.status === 200) {
         alert("Empleado actualizado exitosamente");
         route.push("/perfilE/empleadoG/");
         setShowModal(false); // Cierra el modal
       } else {
         alert(`Error: ${data.error || 'Error: Error desconocido'}`);
-
       }
     } catch (error) {
       console.error('Error al actualizar empleado:', error);
@@ -171,7 +160,7 @@ function GestionEmpleado() {
       const data = await response.json();
       if (response.ok) {
         alert('Empleado eliminado correctamente');
-        route.refresh()
+        route.refresh();
       } else {
         alert(data.error);
       }
@@ -185,15 +174,14 @@ function GestionEmpleado() {
     const confirmDelete = window.confirm('¿Seguro que quieres eliminar a este empleado?');
     if (confirmDelete) {
       eliminarEmpleado(id_Empleado);
-      route.refresh()
+      route.refresh();
     }
   };
 
-  // Función para regresar
   const handleBack = () => {
     route.push("/perfilE/");
   };
-
+  
   return (
     
     <div className="flex flex-col md:flex-row space-x-8 p-8">
@@ -266,7 +254,7 @@ function GestionEmpleado() {
           >
             Buscar Empleado
           </button>
-          {empleado.id_Empleado && empleado.nombreE && (
+          {modoEdicion && empleado.id_Empleado && empleado.nombreE && empleado.apellidoPE && empleado.apellidoME &&  (
              <button
              type="submit"
              onClick={() => handleEliminarClick(empleado.id_Empleado)}
@@ -275,9 +263,8 @@ function GestionEmpleado() {
              Eliminar
            </button>
           )}
-          {empleado.id_Empleado && empleado.nombreE && (
+          {modoEdicion && empleado.id_Empleado && empleado.nombreE && (
             
-
             <button
             type="submit"
               onClick={handleUpdate}
@@ -294,6 +281,7 @@ function GestionEmpleado() {
             Registrar
           </button>
         </div>
+
         <div className="w-full mt-6">
           <button
           type="submit"
