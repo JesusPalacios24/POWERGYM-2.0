@@ -15,7 +15,11 @@ export async function POST(req) {
       celularE,
       domicilioE,
       nivelEducacion,
+      fecha_registroE,
       fechaCumple,
+      codigoPo,
+      curp,
+      rfc,
       contrasena,
       foto,
     } = await req.json();
@@ -24,7 +28,7 @@ export async function POST(req) {
     if (
       !nombreE || !apellidoPE || !sexoE || !puesto || !correoE ||
       !celularE || !domicilioE || !nivelEducacion || !fechaCumple ||
-      !apellidoME || !sueldoE || !id_Empleado
+      !apellidoME || !sueldoE || !id_Empleado || !codigoPo || !curp || !rfc 
     ) {
       return new Response(
         JSON.stringify({ error: 'Todos los campos son obligatorios.' }),
@@ -39,12 +43,19 @@ export async function POST(req) {
         { status: 400 }
       );
     }
+    console.log('fechaCumple:', fechaCumple);
+if (isNaN(Date.parse(fechaCumple))) {
+  return new Response(
+    JSON.stringify({ error: 'Fecha de cumpleaños inválida.' }),
+    { status: 400 }
+  );
+}
 
     // Insertar el nuevo empleado en la base de datos
     const [result] = await pool.execute(
       `INSERT INTO empleado
-        (id_Empleado, nombreE, apellidoPE, apellidoME, sexoE, sueldoE, puesto, correoE, celularE, domicilioE, nivelEducacion, fechaCumple, contrasena, foto)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (id_Empleado, nombreE, apellidoPE, apellidoME, sexoE, sueldoE, puesto, correoE, celularE, domicilioE, nivelEducacion, fecha_registroE, fechaCumple, codigoPo, curp, rfc, contrasena, foto)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
       [
         id_Empleado,
         nombreE,
@@ -57,9 +68,13 @@ export async function POST(req) {
         celularE,
         domicilioE,
         nivelEducacion,
+        fecha_registroE,
         fechaCumple,
+        codigoPo,
+        curp,
+        rfc,
         contrasena,
-        foto,
+        foto
       ]
     );
 

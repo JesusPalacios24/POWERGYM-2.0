@@ -53,7 +53,7 @@ export async function PUT(req, { params }) {
     const updatedData = await req.json();
 
     const [result] = await pool.execute(
-      `UPDATE empleado SET nombreE = ?, apellidoPE = ?, apellidoME = ?, sexoE = ?, sueldoE = ?, puesto = ?, correoE = ?, celularE = ?, domicilioE = ?, nivelEducacion = ?, fechaCumple = ? WHERE id_Empleado = ?`,
+      `UPDATE empleado SET nombreE = ?, apellidoPE = ?, apellidoME = ?, sexoE = ?, sueldoE = ?, puesto = ?, correoE = ?, celularE = ?, domicilioE = ?, nivelEducacion = ?, fechaCumple = ?, codigoPo = ?, curp = ?, rfc = ?, foto = ? WHERE id_Empleado = ?`,
       [
         updatedData.nombreE,
         updatedData.apellidoPE,
@@ -66,6 +66,10 @@ export async function PUT(req, { params }) {
         updatedData.domicilioE,
         updatedData.nivelEducacion,
         updatedData.fechaCumple,
+        updatedData.codigoPo,
+        updatedData.curp,
+        updatedData.rfc,
+        updatedData.foto,
         id_Empleado
       ]
     );

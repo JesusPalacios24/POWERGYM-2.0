@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 function GestionEmpleado() {
   const hoy = new Date();
   const fechaActual = hoy.toISOString().split('T')[0];
+  const fechaActualSQL = new Date().toISOString().split('T')[0];
   const route = useRouter();
 
   const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
@@ -22,14 +23,24 @@ function GestionEmpleado() {
     celularE: "",
     domicilioE: "",
     nivelEducacion: "",
+    fecha_registroE: fechaActualSQL,
     fechaCumple: "",
-    
+    codigoPo: "",
+    curp: "",
+    rfc: "",
     contrasena:"PowerGYM123",
-    foto:"",
+    foto:""
+    
   });
-
+  
   const [imageSrc, setImageSrc] = useState("/userdefecto.png");
   const [imageBlob, setImageBlob] = useState(null);
+
+  
+
+  
+
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -89,6 +100,29 @@ function GestionEmpleado() {
   //funcion para registrar
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+              // Validación de CURP (18 caracteres, formato específico)
+         /*    
+        const curpPattern = /^[A-Z]{4}\d{6}[A-Z]{6}[A-Z0-9]{1}[A-Z]{1}\d{1}$/;
+        if (!curpPattern.test(empleado.curp.trim().toUpperCase())) {
+          alert("La CURP no tiene un formato válido.");
+          return; // Detiene la ejecución si la CURP no es válida
+        }*/
+
+        // Validación de Código Postal (CP) (5 dígitos numéricos)
+        const cpPattern = /^\d{5}$/;
+        if (!cpPattern.test(empleado.codigoPo)) {
+          alert("El código postal debe tener exactamente 5 dígitos.");
+          return; // Detiene la ejecución si el CP no es válido
+        }
+
+        // Validación de RFC (13 caracteres, formato específico)
+        const rfcPattern = /^[A-Z]{4}\d{6}[A-Z0-9]{3}$/;
+        if (!rfcPattern.test(empleado.rfc)) {
+          alert("El RFC no tiene un formato válido.");
+          return; // Detiene la ejecución si el RFC no es válido
+}
+
           // Validación de número de celular
       if (!/^\d{10}$/.test(empleado.celularE)) {
         alert("El número de celular debe tener exactamente 10 dígitos y solo números.");
@@ -103,16 +137,12 @@ function GestionEmpleado() {
       }
 
       // Validación de nombre (no vacío y solo letras)
-      if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.nombreE)) {
+      if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.nombreE && empleado.apellidoME && empleado.apellidoPE)) {
         alert("El nombre solo puede contener letras y espacios.");
         return; // Detiene la ejecución si el nombre no es válido
       }
 
-      // Validación de apellido (no vacío y solo letras)
-      if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.apellidoE)) {
-        alert("El apellido solo puede contener letras y espacios.");
-        return; // Detiene la ejecución si el apellido no es válido
-      }
+    
 
     try {
 
@@ -127,7 +157,7 @@ function GestionEmpleado() {
       const data = await res.json();
       if (res.status === 200) {
         alert('Empleado registrado exitosamente');
-        route.refresh();
+        window.location.reload();
       } else {
         alert(`Error al registrar al empleado: ${data.error || 'Error desconocido'}`);
       }
@@ -163,6 +193,31 @@ function GestionEmpleado() {
 
   // Función para manejar la actualización del empleado
   const handleUpdate = async () => {
+
+            // Validación de Código Postal (CP) (5 dígitos numéricos)
+            const cpPattern = /^\d{5}$/;
+            if (!cpPattern.test(empleado.codigoPo)) {
+              alert("El código postal debe tener exactamente 5 dígitos.");
+              return; // Detiene la ejecución si el CP no es válido
+            }
+        // Validación de número de celular
+        if (!/^\d{10}$/.test(empleado.celularE)) {
+          alert("El número de celular debe tener exactamente 10 dígitos y solo números.");
+          return; // Detiene la ejecución si el número no es válido
+        }
+  
+        // Validación de correo electrónico
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(empleado.correoE)) {
+          alert("El correo electrónico no tiene un formato válido.");
+          return; // Detiene la ejecución si el correo no es válido
+        }
+  
+        // Validación de nombre (no vacío y solo letras)
+        if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.nombreE && empleado.apellidoME && empleado.apellidoPE)) {
+          alert("El nombre solo puede contener letras y espacios.");
+          return; // Detiene la ejecución si el nombre no es válido
+        }
     try {
       const res = await fetch(`/api/${empleado.id_Empleado}`, {
         method: 'PUT',
@@ -174,7 +229,7 @@ function GestionEmpleado() {
       const data = await res.json();
       if (res.status === 200) {
         alert("Empleado actualizado exitosamente");
-        route.push("/perfilE/empleadoG/");
+        window.location.reload();
         setShowModal(false); // Cierra el modal
       } else {
         alert(`Error: ${data.error || 'Error: Error desconocido'}`);
@@ -193,7 +248,7 @@ function GestionEmpleado() {
       const data = await response.json();
       if (response.ok) {
         alert('Empleado eliminado correctamente');
-        route.refresh();
+        window.location.reload();
       } else {
         alert(data.error);
       }
@@ -207,7 +262,7 @@ function GestionEmpleado() {
     const confirmDelete = window.confirm('¿Seguro que quieres eliminar a este empleado?');
     if (confirmDelete) {
       eliminarEmpleado(id_Empleado);
-      route.refresh();
+      window.location.reload();
     }
   };
 
@@ -357,12 +412,14 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Nombre(s):</label>
             <input
               type="text"
+              required
               name="nombreE"
-              placeholder="Pedro"
+              placeholder="Ej. Pedro"
               value={empleado.nombreE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            
           </div>
 
           {/* Apellido Paterno */}
@@ -370,7 +427,8 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Apellido Paterno:</label>
             <input
               type="text"
-              placeholder="Balmaceda"
+              required
+              placeholder="Ej. Balmaceda"
               name="apellidoPE"
               value={empleado.apellidoPE}
               onChange={handleChange}
@@ -383,8 +441,9 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Apellido Materno:</label>
             <input
               type="text"
+              required
               name="apellidoME"
-              placeholder="Pascal"
+              placeholder="Ej. Pascal"
               value={empleado.apellidoME}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -396,6 +455,7 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Sexo:</label>
             <select
               name="sexoE"
+              required
               value={empleado.sexoE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -412,8 +472,9 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Sueldo:</label>
             <input
               type="number"
+              required
               name="sueldoE"
-              placeholder="5000"
+              placeholder="Ej. 5000"
               value={empleado.sueldoE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -421,11 +482,43 @@ function GestionEmpleado() {
             />
           </div>
 
+          {/**Curp */}
+          <div className="col-span-1">
+          <label className="block text-sm font-medium text-gray-700">CURP:</label>
+          <input
+            type="text"
+            name="curp"
+            required
+            placeholder="Ej. ABCD800101HDFXYZ01"
+            value={empleado.curp}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            maxLength={18} // Limita a 18 caracteres
+          />
+          <p className="mt-2 text-sm text-gray-500">Formato: ABCD800101HDFXYZ01 (18 digitos)</p>
+        </div>
+
+        {/**RFC */}
+        <div className="col-span-1">
+          <label className="block text-sm font-medium text-gray-700">RFC:</label>
+          <input
+            type="text"
+            name="rfc"
+            required
+            placeholder="Ej. ABCD123456XYZ"
+            value={empleado.rfc}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            maxLength={13} // Limita a 13 caracteres
+          />
+          <p className="mt-2 text-sm text-gray-500">Formato: ABCD123456XYZ (12-13 digitos) </p>
+        </div>
           {/* Puesto */}
           <div className="col-span-1">
             <label className="block text-sm font-medium text-gray-700">Puesto:</label>
             <select
               name="puesto"
+              required
               value={empleado.puesto}
               onChange={handlePuestoChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -447,7 +540,7 @@ function GestionEmpleado() {
               id="helperCorreo"
               value={empleado.correoE}
               onChange={handleChange}
-              placeholder="correo@ejemplo.com"
+              placeholder="Ej. correo@ejemplo.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               
@@ -462,9 +555,10 @@ function GestionEmpleado() {
             <input
               maxLength={10}
               minLength={10}
+              required
               type="tel"
               name="celularE"
-              placeholder="Ejem.- 6141098578"
+              placeholder="Ej.- 6141098578"
               pattern="^[0-9]{10}$" // Esto asegura que solo se ingresen 10 dígitos numéricos
               value={empleado.celularE}
               onChange={(e) => {
@@ -476,6 +570,7 @@ function GestionEmpleado() {
               }}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="mt-2 text-sm text-gray-500">10 digitos</p>
           </div>
 
           {/* Dirección */}
@@ -483,13 +578,38 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Dirección:</label>
             <input
               type="text"
+              required
               name="domicilioE"
-              placeholder="Calle Juarez 123, Col. Centro CP 31000"
+              placeholder="Ej. Calle Juarez 123, Col. Centro "
               value={empleado.domicilioE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Calle, numero, colonia y Codigo Postal</p>
+            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Calle, numero, colonia</p>
+          </div>
+          {/**Codigo Potal */}
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700">Código Postal:</label>
+            <input
+              type="number"
+              required
+              name="codigoPostal"
+              placeholder="Ej. 31000"
+              value={empleado.codigoPo}
+              
+              onChange={(e) => {
+                // Asegura que solo se ingresen números y limita a 5 caracteres
+                const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 5); // Solo permite números y limita a 5
+                handleChange({
+                  target: {
+                    name: 'codigoPo',
+                    value: value,
+                  },
+                });
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       />
+            <p className="mt-2 text-sm text-gray-500">5 digitos</p>
           </div>
 
           
@@ -499,6 +619,7 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Nivel de educación</label>
             <select
               name="nivelEducacion"
+              required
               value={empleado.nivelEducacion}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
