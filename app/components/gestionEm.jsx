@@ -10,6 +10,26 @@ function GestionEmpleado() {
   const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
   const [id_Empleado, setEmpleadoId] = useState(""); // Almacena el ID del empleado que el usuario ingresa
 
+ 
+  const [imageSrc, setImageSrc] = useState("/userdefecto.png");
+  const [imageBlob, setImageBlob] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]; // Obtiene el archivo seleccionado
+    if (file) {
+      const blob = new Blob([file], { type: file.type }); // Crea un blob del archivo
+      setImageBlob(blob);
+
+      // Genera una URL temporal para mostrar la imagen seleccionada
+      const imageURL = URL.createObjectURL(file);
+      setImageSrc(imageURL);
+    }
+  };
+
+
+    
+    
+   
 
   // Estado para almacenar los datos del empleado
   const [empleado, setEmpleado] = useState({
@@ -98,10 +118,10 @@ function GestionEmpleado() {
         alert('Empleado registrado exitosamente');
         route.push("/perfilE"); // Redirigir a otra página si es necesario
       } else {
-        alert(`Error al registrar el empleado: ${data.error || 'Unknown error'}`);
+        alert(`Error al registrar al empleado: ${data.error || 'Error: Error desconocido'}`);
       }
     } catch (error) {
-      console.error('Error al enviar datos:', error);
+      console.error('Error al enviar los datos:', error);
       alert('Ocurrió un error al registrar el empleado');
     }
   };
@@ -127,7 +147,7 @@ function GestionEmpleado() {
       }
     } catch (error) {
       console.error('Error al cargar los datos del empleado:', error);
-      alert('Hubo un error al cargar los datos del empleado');
+      alert('Se produjo un problema al cargar los datos del empleado');
     }
   };
 
@@ -149,7 +169,7 @@ function GestionEmpleado() {
         setShowModal(false); // Cierra el modal
         route.push("/perfilE"); // Redirigir a la página de perfil
       } else {
-        alert(`Error: ${data.error || 'Unknown error'}`);
+        alert(`Error: ${data.error || 'Error: Error desconocido'}`);
 
       }
     } catch (error) {
@@ -177,7 +197,7 @@ function GestionEmpleado() {
   };
 
   const handleEliminarClick = (id_Empleado) => {
-    const confirmDelete = window.confirm('¿Estás seguro de que deseas eliminar a este empleado?');
+    const confirmDelete = window.confirm('¿Seguro que quieres eliminar a este empleado?');
     if (confirmDelete) {
       eliminarEmpleado(id_Empleado);
     }
@@ -189,7 +209,9 @@ function GestionEmpleado() {
   };
 
   return (
+    
     <div className="flex flex-col md:flex-row space-x-8 p-8">
+     
       {/* Modal para ingresar el ID del empleado */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
@@ -222,12 +244,14 @@ function GestionEmpleado() {
       {/* Columna izquierda con imagen */}
       <div className="flex-1 md:w-1/3 flex flex-col items-center mb-8 md:mb-0">
         <img
-          src="/userdefecto.png"
+          src={imageSrc}
           alt="Empleado"
           className="w-48 h-48 rounded-full object-cover mb-4"
         />
-        <button className="text-white bg-salmonColor hover:bg-naranjaLogo py-2 px-4 rounded-full mb-4">
-          Cambiar imagen
+        <button 
+        onClick={() => document.getElementById("fileInput").click()}
+        className="text-white bg-salmonColor hover:bg-naranjaLogo py-2 px-4 rounded-full mb-4">
+          Cambiar la imagen
         </button>
         <div className="mt-4 w-full">
           <label className="block text-sm font-medium text-gray-700">Fecha de cumpleaños</label>
@@ -238,15 +262,25 @@ function GestionEmpleado() {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {/* Input oculto para seleccionar archivo */}
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
         </div>
         <div className="flex flex-col space-y-4 mt-6 w-full">
           <button
+            type="submit"
             onClick={() => handleEliminarClick(empleado.id_Empleado)}
             className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
           >
             Eliminar
           </button>
           <button
+          type="submit"
             onClick={() => setShowModal(true)} // Abre el modal al hacer clic
             className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
           >
@@ -254,6 +288,7 @@ function GestionEmpleado() {
           </button>
           {empleado.id_Empleado && empleado.nombreE && (
             <button
+            type="submit"
               onClick={handleUpdate}
               className="w-full py-2 bg-yellow-400 text-white rounded-md"
             >
@@ -261,6 +296,7 @@ function GestionEmpleado() {
             </button>
           )}
           <button
+          type="submit"
             onClick={handleSubmit}
             className="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-700"
           >
@@ -269,10 +305,11 @@ function GestionEmpleado() {
         </div>
         <div className="w-full mt-6">
           <button
+          type="submit"
             onClick={handleBack}
             className="w-full py-2 bg-salmonColor text-white rounded-md hover:bg-naranjaLogo"
           >
-            Regresar
+            Volver
           </button>
         </div>
       </div>
@@ -282,7 +319,7 @@ function GestionEmpleado() {
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* ID */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">ID</label>
+            <label className="block text-sm font-medium text-gray-700">ID (predeterminado):</label>
             <input
               disabled
               type="text"
@@ -293,7 +330,7 @@ function GestionEmpleado() {
 
           {/* Fecha */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Fecha</label>
+            <label className="block text-sm font-medium text-gray-700">Fecha de registro:</label>
             <input
               disabled
               type="date"
@@ -304,10 +341,11 @@ function GestionEmpleado() {
 
           {/* Nombre */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <label className="block text-sm font-medium text-gray-700">Nombre(s):</label>
             <input
               type="text"
               name="nombreE"
+              placeholder="Pedro"
               value={empleado.nombreE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -316,9 +354,10 @@ function GestionEmpleado() {
 
           {/* Apellido Paterno */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Apellido Paterno</label>
+            <label className="block text-sm font-medium text-gray-700">Apellido Paterno:</label>
             <input
               type="text"
+              placeholder="Balmaceda"
               name="apellidoPE"
               value={empleado.apellidoPE}
               onChange={handleChange}
@@ -328,10 +367,11 @@ function GestionEmpleado() {
 
           {/* Apellido Materno */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Apellido Materno</label>
+            <label className="block text-sm font-medium text-gray-700">Apellido Materno:</label>
             <input
               type="text"
               name="apellidoME"
+              placeholder="Pascal"
               value={empleado.apellidoME}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -340,33 +380,36 @@ function GestionEmpleado() {
 
           {/* Sexo */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Sexo</label>
+            <label className="block text-sm font-medium text-gray-700">Sexo:</label>
             <select
               name="sexoE"
               value={empleado.sexoE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Masculino">Masculino</option>
-              <option value="Femenino">Femenino</option>
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+              <option value="Is">Intersex</option>
             </select>
           </div>
 
           {/* Sueldo */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Sueldo</label>
+            <label className="block text-sm font-medium text-gray-700">Sueldo:</label>
             <input
               type="number"
               name="sueldoE"
+              placeholder="5000"
               value={empleado.sueldoE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              min="0"
             />
           </div>
 
           {/* Puesto */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Puesto</label>
+            <label className="block text-sm font-medium text-gray-700">Puesto:</label>
             <select
               name="puesto"
               value={empleado.puesto}
@@ -382,22 +425,30 @@ function GestionEmpleado() {
 
           {/* Correo */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Correo electrónico</label>
+            <label className="block text-sm font-medium text-gray-700">Correo electrónico:</label>            
             <input
               type="email"
               name="correoE"
+              id="helperCorreo"
               value={empleado.correoE}
               onChange={handleChange}
+              placeholder="correo@ejemplo.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              
             />
+            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Asegúrate de incluir "@" y un dominio</p>
+             
           </div>
 
           {/* Teléfono */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+            <label className="block text-sm font-medium text-gray-700">Teléfono personal:</label>
             <input
               type="tel"
               name="celularE"
+              placeholder="6141098578"
+              pattern="[0-9]{3}[0-9]{2}[0-9]{3}"
               value={empleado.celularE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -406,14 +457,16 @@ function GestionEmpleado() {
 
           {/* Dirección */}
           <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700">Dirección</label>
+            <label className="block text-sm font-medium text-gray-700">Dirección:</label>
             <input
               type="text"
               name="domicilioE"
+              placeholder="Calle Juarez 123, Col. Centro CP 31000, Chihuahua,Chihua"
               value={empleado.domicilioE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Calle, numero, colonia, Codigo Postal, Ciudad, Estado</p>
           </div>
 
           {/* Nivel de educación */}
