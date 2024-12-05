@@ -23,6 +23,7 @@ function GestionEmpleado() {
     domicilioE: "",
     nivelEducacion: "",
     fechaCumple: "",
+    
     contrasena:"PowerGYM123",
     foto:"",
   });
@@ -32,12 +33,17 @@ function GestionEmpleado() {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const blob = new Blob([file], { type: file.type });
-      setImageBlob(blob);
-      const imageURL = URL.createObjectURL(file);
-      setImageSrc(imageURL);
-    }
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImageSrc(reader.result); // Actualiza la vista previa
+      setEmpleado((prevEmpleado) => ({
+        ...prevEmpleado,
+        foto: reader.result.split(',')[1], // Guarda el Base64 sin prefijo en el empleado
+      }));
+    };
+    reader.readAsDataURL(file);
+  }
   };
 
   const handleChange = (e) => {
@@ -83,7 +89,34 @@ function GestionEmpleado() {
   //funcion para registrar
   const handleSubmit = async (e) => {
     e.preventDefault();
+          // Validación de número de celular
+      if (!/^\d{10}$/.test(empleado.celularE)) {
+        alert("El número de celular debe tener exactamente 10 dígitos y solo números.");
+        return; // Detiene la ejecución si el número no es válido
+      }
+
+      // Validación de correo electrónico
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(empleado.correoE)) {
+        alert("El correo electrónico no tiene un formato válido.");
+        return; // Detiene la ejecución si el correo no es válido
+      }
+
+      // Validación de nombre (no vacío y solo letras)
+      if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.nombreE)) {
+        alert("El nombre solo puede contener letras y espacios.");
+        return; // Detiene la ejecución si el nombre no es válido
+      }
+
+      // Validación de apellido (no vacío y solo letras)
+      if (!/^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$/.test(empleado.apellidoE)) {
+        alert("El apellido solo puede contener letras y espacios.");
+        return; // Detiene la ejecución si el apellido no es válido
+      }
+
     try {
+
+     
       const res = await fetch('../api/registroEmp/', {
         method: 'POST',
         headers: {
@@ -242,6 +275,7 @@ function GestionEmpleado() {
         type="file"
         accept="image/*"
         onChange={handleFileChange}
+      
         style={{ display: "none" }}
       />
         </div>
@@ -383,7 +417,7 @@ function GestionEmpleado() {
               value={empleado.sueldoE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              min="0"
+              min="1000"
             />
           </div>
 
@@ -427,12 +461,19 @@ function GestionEmpleado() {
             <label className="block text-sm font-medium text-gray-700">Teléfono personal:</label>
             <input
               maxLength={10}
+              minLength={10}
               type="tel"
               name="celularE"
               placeholder="Ejem.- 6141098578"
-              pattern="[0-9]{3}[0-9]{2}[0-9]{3}"
+              pattern="^[0-9]{10}$" // Esto asegura que solo se ingresen 10 dígitos numéricos
               value={empleado.celularE}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Asegura que solo se ingresen números
+                const regex = /^[0-9]{0,10}$/;
+                if (regex.test(e.target.value)) {
+                  handleChange(e);
+                }
+              }}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -443,13 +484,15 @@ function GestionEmpleado() {
             <input
               type="text"
               name="domicilioE"
-              placeholder="Calle Juarez 123, Col. Centro CP 31000, Chihuahua,Chihua"
+              placeholder="Calle Juarez 123, Col. Centro CP 31000"
               value={empleado.domicilioE}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Calle, numero, colonia, Codigo Postal, Ciudad, Estado</p>
+            <p id="helperCorreo" className="mt-2 text-sm text-gray-500 ">Calle, numero, colonia y Codigo Postal</p>
           </div>
+
+          
 
           {/* Nivel de educación */}
           <div className="col-span-1">
@@ -460,6 +503,7 @@ function GestionEmpleado() {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="Sellecion">Selecciona</option>
               <option value="Medio Superior">Medio Superior</option>
               <option value="Superior">Superior</option>
             </select>
