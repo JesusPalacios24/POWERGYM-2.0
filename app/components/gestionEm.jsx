@@ -272,21 +272,26 @@ function GestionEmpleado() {
       />
         </div>
         <div className="flex flex-col space-y-4 mt-6 w-full">
-          <button
-            type="submit"
-            onClick={() => handleEliminarClick(empleado.id_Empleado)}
-            className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
-          >
-            Eliminar
-          </button>
+         
           <button
           type="submit"
             onClick={() => setShowModal(true)} // Abre el modal al hacer clic
             className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
           >
-            Modificar
+            Buscar Empleado
           </button>
           {empleado.id_Empleado && empleado.nombreE && (
+             <button
+             type="submit"
+             onClick={() => handleEliminarClick(empleado.id_Empleado)}
+             className="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-700"
+           >
+             Eliminar
+           </button>
+          )}
+          {empleado.id_Empleado && empleado.nombreE && (
+            
+
             <button
             type="submit"
               onClick={handleUpdate}
