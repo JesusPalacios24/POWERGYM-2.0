@@ -9,7 +9,7 @@ function GestionEmpleado() {
 
   const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
   const [id_Empleado, setEmpleadoId] = useState(""); // Almacena el ID del empleado que el usuario ingresa
-
+  
  
   const [imageSrc, setImageSrc] = useState("/userdefecto.png");
   const [imageBlob, setImageBlob] = useState(null);
@@ -25,11 +25,6 @@ function GestionEmpleado() {
       setImageSrc(imageURL);
     }
   };
-
-
-    
-    
-   
 
   // Estado para almacenar los datos del empleado
   const [empleado, setEmpleado] = useState({
@@ -47,55 +42,45 @@ function GestionEmpleado() {
     fechaCumple: "",
   });
 
-  // Función para generar la ID basada en el cargo
-  const generarId = (puesto) => {
-    const letras = {
-      "Entrenador": "E",
-      "Secretaria": "S",
-      "Gerente": "G",
-      "Instructor": "I",
-    };
-
-    // Genera un número aleatorio de 6 dígitos
-    const numeroAleatorio = Math.floor(100000 + Math.random() * 900000);
-
-    // Asigna la letra correspondiente al cargo y genera la ID completa
-    return `${letras[puesto] || 'X'}${numeroAleatorio}`;
-  };
-
-  // Establecer ID solo cuando no hay uno
-  useEffect(() => {
-    // Solo generar ID si no existe y si el puesto tiene valor
-    if (!empleado.id_Empleado && empleado.puesto) {
-      const nuevaId = generarId(empleado.puesto);
-      setEmpleado((prevState) => ({
-        ...prevState,
-        id_Empleado: nuevaId,
-      }));
-    }
-  }, [empleado.puesto]); // Re-ejecuta el efecto solo cuando 'puesto' cambia
-
-  // Verificar si el estado de 'empleado' cambia
-  useEffect(() => {
-    console.log('ID Empleado actualizado:', empleado.id_Empleado);
-  }, [empleado.id_Empleado]); // Esto solo debe ejecutarse cuando 'id_Empleado' cambia
-
-  // Función para manejar el cambio en el puesto
-  const handlePuestoChange = (e) => {
-    setEmpleado((prevState) => ({
-      ...prevState,
-      puesto: e.target.value,  // Solo cambiar el puesto
-      id_Empleado: "",  // Resetear la ID para que se regenere cuando cambie el puesto
-    }));
-  };
-
-  // Manejar los cambios de los campos
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEmpleado((prevState) => ({
-      ...prevState,
+    setEmpleado((prevEmpleado) => ({
+      ...prevEmpleado,
       [name]: value,
     }));
+  };
+
+  const handlePuestoChange = async (e) => {
+    const nuevoPuesto = e.target.value;
+    const nuevoId = await generarIdEmpleado(nuevoPuesto);
+
+    setEmpleado((prevEmpleado) => ({
+      ...prevEmpleado,
+      puesto: nuevoPuesto,
+      id_Empleado: nuevoId,
+    }));
+  };
+
+  const obtenerNumeroEmpleadosPorPuesto = async (puesto) => {
+    try {
+      const res = await fetch('/api/genIds/', {
+        method: 'POST',
+        body: JSON.stringify({ type: puesto.charAt(0).toUpperCase() }),
+      });
+      const data = await res.json();
+      return data.total || 0;
+    } catch (error) {
+      console.error("Error al obtener empleados:", error);
+      return 0;
+    }
+  };
+
+  const generarIdEmpleado = async (puesto) => {
+    const totalEmpleados = await obtenerNumeroEmpleadosPorPuesto(puesto);
+    const letraInicial = puesto.charAt(0).toUpperCase();
+    const year = new Date().getFullYear();
+    const nuevoNumero = (totalEmpleados + 1).toString().padStart(2, '0');
+    return `${letraInicial}${year}${nuevoNumero}`;
   };
 
   //funcion para registrar
@@ -116,7 +101,7 @@ function GestionEmpleado() {
 
       if (res.status === 200) {
         alert('Empleado registrado exitosamente');
-        route.push("/perfilE"); // Redirigir a otra página si es necesario
+        route.refresh()
       } else {
         alert(`Error al registrar al empleado: ${data.error || 'Error: Error desconocido'}`);
       }
@@ -166,8 +151,8 @@ function GestionEmpleado() {
 
       if (res.status === 200) {
         alert("Empleado actualizado exitosamente");
+        route.push("/perfilE/empleadoG/");
         setShowModal(false); // Cierra el modal
-        route.push("/perfilE"); // Redirigir a la página de perfil
       } else {
         alert(`Error: ${data.error || 'Error: Error desconocido'}`);
 
@@ -186,7 +171,7 @@ function GestionEmpleado() {
       const data = await response.json();
       if (response.ok) {
         alert('Empleado eliminado correctamente');
-        route.push("/perfilE"); // Redirigir a otra página si es necesario
+        route.refresh()
       } else {
         alert(data.error);
       }
@@ -200,12 +185,13 @@ function GestionEmpleado() {
     const confirmDelete = window.confirm('¿Seguro que quieres eliminar a este empleado?');
     if (confirmDelete) {
       eliminarEmpleado(id_Empleado);
+      route.refresh()
     }
   };
 
   // Función para regresar
   const handleBack = () => {
-    route.push("/perfilE");
+    route.push("/perfilE/");
   };
 
   return (
@@ -392,6 +378,7 @@ function GestionEmpleado() {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="Sl">Selecciona</option>
               <option value="M">Masculino</option>
               <option value="F">Femenino</option>
               <option value="Is">Intersex</option>
@@ -421,6 +408,7 @@ function GestionEmpleado() {
               onChange={handlePuestoChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
+              <option value="Seleccion">Selecciona</option>
               <option value="Secretaria">Secretaria</option>
               <option value="Entrenador">Entrenador</option>
               <option value="Instructor">Instructor</option>
@@ -450,9 +438,10 @@ function GestionEmpleado() {
           <div className="col-span-1">
             <label className="block text-sm font-medium text-gray-700">Teléfono personal:</label>
             <input
+              maxLength={10}
               type="tel"
               name="celularE"
-              placeholder="6141098578"
+              placeholder="Ejem.- 6141098578"
               pattern="[0-9]{3}[0-9]{2}[0-9]{3}"
               value={empleado.celularE}
               onChange={handleChange}

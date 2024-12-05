@@ -19,8 +19,6 @@ function Navbar() {
 
                 {/* Enlaces (pantallas grandes) */}
                 <div className="hidden md:flex gap-5 ml-auto">
-                    <a href="/" className="hover:text-black text-navText font-bold text-xl">Inicio</a>
-                    <a href="/" className="hover:text-black text-navText font-bold text-xl">Servicios</a>
                     {isAuthenticated ? (
                         <a href="../perfilE" className="hover:text-black text-navText font-bold text-xl">
                             <img src="/userdefecto.png" alt="Perfil" className="h-12 rounded-full" />
